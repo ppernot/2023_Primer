@@ -263,14 +263,13 @@ for (case in cases) {
       width = gPars$reso,
       height = gPars$reso
     )
-    ErrViewLib::plotLZISD(
+    ErrViewLib::plotLZMS(
       X$uE,
       Z,
       logX = TRUE,
       xlab = 'Uncertainty, uE',
       score = FALSE,
       label = label,
-      method = 'cho',
       title = pcase,
       gPars = gPars
     )
@@ -326,7 +325,7 @@ for (case in cases) {
       X$uE,
       score = FALSE,
       label = label,
-      legLoc = 'bottomright',
+      legLoc = 'top',
       col = 5,
       title = pcase,
       gPars = gPars
@@ -345,7 +344,7 @@ for (case in cases) {
         dist_probref = 'T4',
         col = 5,
         label = label + 1,
-        legLoc = 'bottomright',
+        legLoc = 'top',
         title = expression(list("Case E") ~  ~ italic(D) == italic(t)[nu ==
                                                                         4]),
         gPars = gPars
@@ -402,14 +401,13 @@ for (case in cases) {
     width = gPars$reso,
     height = gPars$reso
   )
-  ErrViewLib::plotLZISD(
+  ErrViewLib::plotLZMS(
     X$X,
     Z,
     logX = FALSE,
     xlab = 'Input Feature, X',
     score = FALSE,
     label = label,
-    method = 'cho',
     title = pcase,
     gPars = gPars
   )
@@ -464,14 +462,13 @@ for (case in cases) {
     width = gPars$reso,
     height = gPars$reso
   )
-  ErrViewLib::plotLZISD(
+  ErrViewLib::plotLZMS(
     X$V,
     Z,
     logX =  all(X$V > 0),
     label = label + 6,
     score = FALSE,
     xlab = 'Predicted Value, V',
-    method = 'cho',
     title = pcase,
     gPars = gPars
   )

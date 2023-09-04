@@ -145,7 +145,7 @@ png(
   width  = gPars$reso,
   height = gPars$reso
 )
-ErrViewLib::plotLZISD(
+ErrViewLib::plotLZMS(
   uE,
   Z,
   xlab = 'Uncertainty, uE [eV]',
@@ -154,7 +154,6 @@ ErrViewLib::plotLZISD(
   equiPop = FALSE,
   score = TRUE,
   label = 4,
-  method = 'cho',
   gPars = gPars
 )
 dev.off()
@@ -165,7 +164,7 @@ png(
   width  = gPars$reso,
   height = gPars$reso
 )
-ErrViewLib::plotLZISD(
+ErrViewLib::plotLZMS(
   masses,
   Z,
   xlim = c(50, 150),
@@ -176,7 +175,6 @@ ErrViewLib::plotLZISD(
   logBin = TRUE,
   score = FALSE,
   label = 5,
-  method = 'cho',
   gPars = gPars
 )
 dev.off()

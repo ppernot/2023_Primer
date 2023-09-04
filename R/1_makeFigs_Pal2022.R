@@ -3,14 +3,14 @@ library(ErrViewLib)
 gPars = ErrViewLib::setgPars(type = 'publish')
 scalePoints = 0.2
 
-biPlotLZISD = function(M1,
+biPlotLZMS = function(M1,
                        M2,
                        set,
                        logX = FALSE,
                        nBin = 10,
                        ylim = NULL,
                        slide = FALSE,
-                       method = 'cho',
+                       method = 'bootstrap',
                        label = 0,
                        xlab = "Uncertainty [eV]",
                        equiPop = TRUE,
@@ -47,7 +47,7 @@ biPlotLZISD = function(M1,
   xlim = c(0.9 * min(c(mint1, mint2)), 1.1 * max(c(mint1, mint2)))
 
   if (is.null(ylim)) {
-    out1 = ErrViewLib::plotLZISD(
+    out1 = ErrViewLib::plotLZMS(
       X1,
       Z1,
       intrv = intrv1,
@@ -56,7 +56,7 @@ biPlotLZISD = function(M1,
       gPars = gPars,
       plot = FALSE
     )
-    out2 = ErrViewLib::plotLZISD(
+    out2 = ErrViewLib::plotLZMS(
       X2,
       Z2,
       intrv = intrv2,
@@ -70,7 +70,7 @@ biPlotLZISD = function(M1,
 
   }
 
-  ErrViewLib::plotLZISD(
+  ErrViewLib::plotLZMS(
     X1,
     Z1,
     nBin = nBin,
@@ -81,12 +81,13 @@ biPlotLZISD = function(M1,
     xlim = xlim,
     xlab = xlab,
     ylim = ylim,
-    col = 2,
+    col = 7,
+    colInv = 4,
     label = label,
     title = set,
     gPars = gPars
   )
-  ErrViewLib::plotLZISD(
+  ErrViewLib::plotLZMS(
     X2,
     Z2,
     nBin = nBin,
@@ -95,6 +96,7 @@ biPlotLZISD = function(M1,
     method = method,
     slide = slide,
     col = 5,
+    colInv = 2,
     xlim = xlim,
     # Ensures that the average bar lies on the axis
     add = TRUE,
@@ -104,7 +106,7 @@ biPlotLZISD = function(M1,
     'top',
     bty = 'n',
     legend = c('Uncalibrated', 'Calibrated'),
-    col = gPars$cols[c(2, 5)],
+    col = gPars$cols[c(7, 5)],
     lwd = gPars$lwd,
     lty = 3,
     pch = 16
@@ -189,7 +191,7 @@ biPlotRelDiag = function(M1,
     xlim = xlim,
     ylim = ylim,
     unit = unit,
-    col = 2,
+    col = 7,
     label = label,
     gPars = gPars
   )
@@ -210,7 +212,7 @@ biPlotRelDiag = function(M1,
     'topleft',
     bty = 'n',
     legend = c('Uncalibrated', 'Calibrated'),
-    col = gPars$cols[c(2, 5)],
+    col = gPars$cols[c(7, 5)],
     pch = 19,
     lty = 3
   )
@@ -410,14 +412,14 @@ for (method in methods) {
       width = gPars$reso,
       height = gPars$reso
     )
-    biPlotLZISD(
+    biPlotLZMS(
       Muncal ,
       Mcal,
       fRoot,
       logX = logX,
       nBin = nBin,
       equiPop = FALSE,
-      method = 'cho',
+      method = 'bootstrap',
       label = label,
       gPars = gPars
     )
@@ -542,7 +544,7 @@ for (fRoot in fRoots) {
       width = gPars$reso,
       height = gPars$reso
     )
-    biPlotLZISD(
+    biPlotLZMS(
       Muncal ,
       Mcal,
       title,
@@ -588,7 +590,7 @@ for (fRoot in fRoots) {
       width = gPars$reso,
       height = gPars$reso
     )
-    biPlotLZISD(
+    biPlotLZMS(
       Muncal ,
       Mcal,
       title,
