@@ -49,6 +49,32 @@ masses = CHNOSZ::mass(S)
 
 # Figs ####
 
+png(
+  file = paste0(figDir, '/Fig_AGC_Norm_Bus.png'),
+  width = gPars$reso,
+  height = gPars$reso
+)
+ErrViewLib::plotAGV(
+  Z = E / uE,
+  dist = 'Normal', nGroup = 500,
+  title = 'Normal reference',
+  label = 1,
+  gPars = gPars)
+dev.off()
+
+png(
+  file = paste0(figDir, '/Fig_AGC_Stud_Bus.png'),
+  width = gPars$reso,
+  height = gPars$reso
+)
+ErrViewLib::plotAGV(
+  Z = E / uE,
+  dist = 'T4', nGroup = 500,
+  title = "Student's reference",
+  label = 2,
+  gPars = gPars)
+dev.off()
+
 ## Fig 16a ####
 png(
   file = file.path(figDir, 'Fig_16a.png'),
@@ -254,3 +280,4 @@ ErrViewLib::plotCC(
   gPars = gPars
 )
 dev.off()
+

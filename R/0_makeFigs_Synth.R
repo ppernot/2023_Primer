@@ -127,6 +127,10 @@ cases = c('Case_A', 'Case_B', 'Case_C', 'Case_D', 'Case_E', 'Case_F')
 
 probLCP = c(0.25, 0.5, 0.75, 0.95)
 
+
+
+
+
 # Figs ####
 
 label = 0
@@ -185,7 +189,7 @@ for (case in cases) {
   dev.off()
 
   if (var(X$uE) != 0) {
-    ## Fig 2 ####
+    # Fig 2 ####
     png(
       file = paste0(figDir, '/Fig_02', letters[label], '.png'),
       width = gPars$reso,
@@ -205,7 +209,7 @@ for (case in cases) {
     )
     dev.off()
 
-    ## Fig 3 ####
+    # Fig 3 ####
     png(
       file = paste0(figDir, '/Fig_03', letters[label], '.png'),
       width = gPars$reso,
@@ -240,7 +244,7 @@ for (case in cases) {
       dev.off()
     }
 
-    ## Fig 4 ####
+    # Fig 4 ####
     png(
       file = paste0(figDir, '/Fig_04', letters[label], '.png'),
       width = gPars$reso,
@@ -275,7 +279,7 @@ for (case in cases) {
     )
     dev.off()
 
-    ## Fig 6 ####
+    # Fig 6 ####
     png(
       file = paste0(figDir, '/Fig_06', letters[label], '.png'),
       width = gPars$reso,
@@ -314,7 +318,7 @@ for (case in cases) {
       dev.off()
     }
 
-    ## Fig 7 ####
+    # Fig 7 ####
     png(
       file = paste0(figDir, '/Fig_07', letters[label], '.png'),
       width = gPars$reso,
@@ -432,9 +436,10 @@ for (case in cases) {
   )
   dev.off()
 
-  # Appendix A ####
 
-  ## Fig 20 ####
+  ## Appendix A ####
+
+  ### Fig 20 ####
   png(
     file = paste0(figDir, '/Fig_20', letters[label], '.png'),
     width = gPars$reso,
@@ -474,4 +479,83 @@ for (case in cases) {
   )
   dev.off()
 
+}
+## Fig. 12 (Scores) ####
+
+ttab = c()
+for(case in cases) {
+  X = get(case)
+  tab = ErrViewLib::tabScoresRef(
+    X$E, X$uE, nBin = 50, rawUnc = TRUE, quant = TRUE)
+  ttab =rbind(ttab,tab)
+}
+
+png(
+  file = paste0(figDir, '/Fig_scores.png'),
+  width = 2*gPars$reso,
+  height = 2*gPars$reso
+)
+par(
+  mfrow = c(2,2),
+  mar = c(4,gPars$mar[2:4]),
+  mgp = gPars$mgp,
+  pty = 's',
+  tcl = gPars$tcl,
+  cex = gPars$cex,
+  cex.main = 1,
+  lwd = gPars$lwd
+)
+vars = c("Scal", "Su", "calib", "enceu")
+names(vars) = c('Scal','Su','<Z^2>','ENCE')
+for(i in seq_along(vars)) {
+  datScal = matrix(ttab[,vars[i]], ncol = 5, byrow = TRUE)
+  xC = 1:length(cases)
+  plot(xC, datScal[,1],
+       type = 'n', log = 'y',
+       xaxt = 'n', xlab = '',
+       ylab = names(vars)[i],
+       ylim = range(datScal[,c(1,4,5)]),
+       main ='')
+  axis(1, at = xC, labels = sub('_',' ',cases), cex.axis = 1, las = 2)
+  grid(equilogs = FALSE)
+  segments(xC, datScal[,4], xC, datScal[,5],
+           col = gPars$cols_tr2[2],
+           lwd = 10*gPars$lwd,
+           lend = 2)
+  points(xC, datScal[,1], type = 'p', pch = 19, col = gPars$cols[1])
+  if(i==1)
+    legend(
+      'topleft', bty = 'n', cex=0.8,
+      legend = c('Statistic', 'Reference'),
+      pch = c(19, NA),
+      lty = c(NA, 1),
+      lwd = c(gPars$cex,10*gPars$lwd),
+      col = c(gPars$cols[1],gPars$cols_tr2[2])
+    )
+  box()
+  mtext(
+    text = paste0('(', letters[i], ')'),
+    side = 3,
+    adj = 1,
+    cex = gPars$cex,
+    line = 0.25
+  )
+}
+dev.off()
+
+
+## Fig. ?? (AGC) ####
+for(i in seq_along(cases)) {
+  X = get(cases[i])
+  png(
+    file = paste0(figDir, '/Fig_AGC', letters[i], '.png'),
+    width = gPars$reso,
+    height = gPars$reso
+  )
+  ErrViewLib::plotAGV(
+    X$E / X$uE,
+    title = sub('_',' ',cases[i]),
+    label = i,
+    gPars = gPars)
+  dev.off()
 }

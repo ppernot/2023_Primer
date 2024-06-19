@@ -81,8 +81,8 @@ biPlotLZMS = function(M1,
     xlim = xlim,
     xlab = xlab,
     ylim = ylim,
-    col = 7,
-    colInv = 4,
+    col = 2,
+    colInv = 2,
     label = label,
     title = set,
     gPars = gPars
@@ -96,7 +96,7 @@ biPlotLZMS = function(M1,
     method = method,
     slide = slide,
     col = 5,
-    colInv = 2,
+    colInv = 5,
     xlim = xlim,
     # Ensures that the average bar lies on the axis
     add = TRUE,
@@ -106,7 +106,7 @@ biPlotLZMS = function(M1,
     'top',
     bty = 'n',
     legend = c('Uncalibrated', 'Calibrated'),
-    col = gPars$cols[c(7, 5)],
+    col = gPars$cols[c(2, 5)],
     lwd = gPars$lwd,
     lty = 3,
     pch = 16
@@ -191,7 +191,7 @@ biPlotRelDiag = function(M1,
     xlim = xlim,
     ylim = ylim,
     unit = unit,
-    col = 7,
+    col = 2,
     label = label,
     gPars = gPars
   )
@@ -212,7 +212,7 @@ biPlotRelDiag = function(M1,
     'topleft',
     bty = 'n',
     legend = c('Uncalibrated', 'Calibrated'),
-    col = gPars$cols[c(7, 5)],
+    col = gPars$cols[c(2, 5)],
     pch = 19,
     lty = 3
   )
@@ -332,7 +332,7 @@ df = data.frame(
   loCal   = NA,
   upCal   = NA
 )
-df1 = df
+df2 = df1 = df
 
 fignum = 12
 for (method in methods) {
@@ -365,7 +365,33 @@ for (method in methods) {
       Mcal = Mcal[sel,]
     }
 
+    # AGC ####
+    png(
+      file = paste0(figDir, '/Fig_AGC_Pal', method,'_',set, '.png'),
+      width = gPars$reso,
+      height = gPars$reso
+    )
+    ErrViewLib::plotAGV(
+      Z = Muncal$E / Muncal$uE,
+      title = paste0(set,' ',method),
+      label = 0,
+      legend = FALSE,
+      gPars = gPars)
+    ErrViewLib::plotAGV(
+      Z = Mcal$E / Mcal$uE,
+      col = 3,
+      add = TRUE,
+      legend = FALSE,
+      gPars = gPars)
+    legend(
+      'topright', bty = 'n',
+      legend = c('Uncalibrated','Calibrated','Reference'),
+      pch = 19, lty = 1, col = gPars$cols[c(6,3,2)])
+    dev.off()
+    # next()
+
     # Gather stats
+    ## Var(Z)
     Z = Muncal$E / Muncal$uE
     zs1 = varZCI(Z, nBoot = length(Z), method = 'cho')
     Z = Mcal$E / Mcal$uE
@@ -382,6 +408,26 @@ for (method in methods) {
         upCal   = zs2$ci[2]
       )
     )
+
+    ## <Z^2>
+    Z = Muncal$E / Muncal$uE
+    zs1 = ErrViewLib::ZMSCI(Z, method = 'auto')
+    Z = Mcal$E / Mcal$uE
+    zs2 = ErrViewLib::ZMSCI(Z, method = 'auto')
+    df2 = rbind(
+      df2,
+      c(
+        Name    = paste0(set, '_', method),
+        muUncal = zs1$mean,
+        loUncal = zs1$ci[1],
+        upUncal = zs1$ci[2],
+        muCal   = zs2$mean,
+        loCal   = zs2$ci[1],
+        upCal   = zs2$ci[2]
+      )
+    )
+
+    ## <Z>
     Z = Muncal$E / Muncal$uE
     m1 = mean(Z)
     um1 = sd(Z) / length(Z)
@@ -404,6 +450,8 @@ for (method in methods) {
         upCal   = up2
       )
     )
+
+
 
     ## Figs 13-15 ####
     label = label + 1
@@ -466,8 +514,10 @@ for (method in methods) {
 
   }
 }
+# stop()
 df  = df[-1,]
 df1 = df1[-1,]
+df2 = df2[-1,]
 
 ## Fig 12a ####
 png(
@@ -478,7 +528,7 @@ png(
 plotStats(
   df1,
   logX = FALSE,
-  title = 'Z-score mean',
+  title = '<Z>',
   label = 1,
   gPars = gPars
 )
@@ -492,6 +542,18 @@ png(
 )
 plotStats(df,
           title = 'Z-score variance',
+          label = 2,
+          gPars = gPars)
+dev.off()
+
+## Fig 12b2 ####
+png(
+  file = file.path(figDir, 'Fig_12b2.png'),
+  width  = 1.5 * gPars$reso,
+  height = gPars$reso
+)
+plotStats(df2,
+          title = '<Z^2>',
           label = 2,
           gPars = gPars)
 dev.off()
